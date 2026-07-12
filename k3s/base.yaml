@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: pod
+metadata:
+  name: k3s-pod
+  namespace: k3s-namespace
+spec:
+  containers:
+    - name: k3s-container
+      image: nginx:stable
+      ports:
+        - containerPort: 80
