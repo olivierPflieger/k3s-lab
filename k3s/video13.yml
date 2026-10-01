@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: video13-replicaset
+  namespace: k3s-namespace
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: video13-nginx
+  template:
+    metadata:
+      labels:
+        app: video13-nginx
+    spec:
+      containers:
+        - name: video13-nginx
+          image: nginx

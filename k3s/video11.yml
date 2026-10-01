@@ -1,0 +1,43 @@
+# EXERCICE : Dans cet exercice, on veut créer un sidecar pour modifier la page web par défaut index.html d'un conteneur Nginx
+#
+# On crée donc un pod avec deux conteneurs (le principal et le sidecar). 
+#
+# Le premier conteneur est un serveur Nginx qui servira une page web par défaut
+#  la page web par défaut se trouve dans le répertoire /usr/share/nginx/html du conteneur Nginx. 
+#  On définit un volume partagé entre les 2 conteneurs qui pointe sur /usr/share/nginx/html
+#
+# ATTENTION: Quand on définit le volume partagé, le contenu du répertoire /usr/share/nginx/html du conteneur Nginx est reset
+#  Du coup, si tu fais un curl sur l'ip avant le sleep de 30s, tu auras un 401, ce qui est normal car la page par défaut 
+#  a été supprimée par le volume partagé.
+# 
+# Le second conteneur, sidecar, est un conteneur BusyBox qui téléchargera une page HTML depuis un dépôt GitHub et 
+#  la placera dans le répertoire partagé afin de modifier la page web par défaut du conteneur Nginx.
+#
+# NOTE: Le deuxieme sleep infini n'est pas nécessaire mais est utilisé pour maintenir le conteneur en vie 
+#  après le téléchargement de la page HTML 
+#  (eviter que le conteneur se termine après l'exécution de la commande wget).
+#
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: video11
+  name: video11
+  namespace: k3s-namespace
+spec:
+  containers:
+  - name: video11
+    image: nginx
+    ports:
+      - containerPort: 80
+    volumeMounts:
+      - name: shared-data
+        mountPath: /usr/share/nginx/html
+  - name: video11-downloader
+    image: busybox
+    command: ['sh', '-c', 'sleep 30s && wget -O /usr/share/nginx/html/index.html https://raw.githubusercontent.com/Semantic-Org/example-github/refs/heads/master/index.html && sleep infinity']
+    volumeMounts:
+      - name: shared-data
+        mountPath: /usr/share/nginx/html
+  volumes:
+  - name: shared-data

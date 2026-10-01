@@ -1,0 +1,39 @@
+# EXERCICE : Dans cet exercice on veut créer un sidecar pour modifier le contenu de la page web par défaut index.html 
+#  d'un conteneur Nginx et affficher le contenu d'une variable d'environnement dans cette page web.
+#
+# On crée donc un pod avec deux conteneurs (le principal et le sidecar). 
+#
+# Le premier conteneur est un serveur Nginx qui servira une page web par défaut
+#  la page web par défaut se trouve dans le répertoire /usr/share/nginx/html du conteneur Nginx. 
+#  On définit un volume partagé entre les 2 conteneurs qui pointe sur /usr/share/nginx/html
+#
+# Le second conteneur, sidecar, est un conteneur BusyBox qui modifie le contenu de la page web par défaut 
+#  du conteneur Nginx en affichant le contenu d'une variable d'environnement dans cette page web, toutes les secondes.
+#
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: video11
+  name: video11
+  namespace: k3s-namespace
+spec:
+  containers:
+  - name: video11
+    image: nginx
+    ports:
+      - containerPort: 80
+    volumeMounts:
+      - name: shared-data
+        mountPath: /usr/share/nginx/html
+  - name: video11-downloader
+    image: busybox
+    command: ['sh', '-c', 'i=0; while true; do i=$((i+1)); echo "echo $mavariable - Counter: $i" > /usr/share/nginx/html/index.html; sleep 1; done']
+    env:
+      - name: mavariable
+        value: "Hello from the sidecar container!"
+    volumeMounts:
+      - name: shared-data
+        mountPath: /usr/share/nginx/html
+  volumes:
+  - name: shared-data
