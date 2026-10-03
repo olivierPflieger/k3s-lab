@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: video17
+  name: video17
+  annotations:
+    kubernetes.io/change-cause: "upgrade from 1.30.5 to 1.31.6"
+  namespace: k3s-namespace
+spec:
+  replicas: 5 
+  selector:
+    matchLabels:
+      app: video17
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 2
+  template:
+    metadata:
+      labels:
+        app: video17
+    spec:
+      containers:
+      - image: nginx:1.30.5
+        imagePullPolicy: IfNotPresent
+        name: nginx
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

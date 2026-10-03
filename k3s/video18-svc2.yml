@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: video18
+  name: video18-svc2
+  namespace: k3s-namespace
+spec:
+  clusterIP: 10.43.82.12
+  clusterIPs:
+  - 10.43.82.12
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: whatever
+    nodePort: 30313
+    port: 32769
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: video18
+  sessionAffinity: None
+  type: NodePort
