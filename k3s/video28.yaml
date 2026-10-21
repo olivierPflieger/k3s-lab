@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: video28
+  namespace: k3s-namespace
+spec:
+  containers:
+  - name: video28-container-nginx
+    image: nginx
+    volumeMounts:
+    - mountPath: "/cache" # représente l'endroit ou on monte le volume
+      name: video28-storage
+  - name: video28-container-alpine
+    image: alpine
+    command: ["/bin/sh", "-c", "--","sleep infinity" ]
+    volumeMounts:
+    - mountPath: "/cache" # représente l'endroit ou on monte le volume
+      name: video28-storage
+  volumes:
+  - name: video28-storage
+    emptyDir: {} # c'est le type du volume... ici, un disque
+     

@@ -3,6 +3,8 @@ kind: Pod
 metadata:
   name: k3s-pod
   namespace: k3s-namespace
+  labels:
+     environment: prod
 spec:
   securityContext:
     runAsNonRoot: true

@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: video26-2-pod
+spec:
+  containers:
+    - name: nginx
+      image: nginx:latest
+      volumeMounts:
+        - name: nginx-config-volume2 # c'est le nom arbitraire donné dans la section volumes
+          mountPath: /etc/nginx/nginx.conf # Overwrite the default nginx.conf
+          subPath: nginx.conf # Spécifie la clé
+      ports:
+        - containerPort: 80
+  volumes:
+    - name: nginx-config-volume2 # nom arbitraire (ce qu'on veut)
+      configMap:
+        name: video26-nginx-config2 # Name of the configMap
+        items:
+          - key: nginx.conf # la clé dans la configMap à utiliser (elle s'appelle nginx.conf) 
+            path: nginx.conf # nom du fichier à utiliser
