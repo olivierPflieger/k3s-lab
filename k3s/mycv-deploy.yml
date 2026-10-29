@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mycv-deploy
+  namespace: k3s-namespace
+spec:
+  replicas: 2
+  selector: 
+    matchLabels: 
+       app: mycv
+  template:
+    metadata:
+      labels:
+        app: mycv
+    spec :
+      imagePullSecrets:
+        - name: ghcr-credentials
+      containers:
+        - name: mycv-pod
+          image: ghcr.io/olivierpflieger/cv:sha-470c1b2
+          ports: 
+            - containerPort: 8080
