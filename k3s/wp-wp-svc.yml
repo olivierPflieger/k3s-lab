@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wp-wp-svc
+  namespace: k3s-namespace
+spec:
+  selector:
+    app: wp-wp
+  type: NodePort
+  ports:
+    - name: whatever
+      nodePort: 30080
+      port: 80
+      targetPort: 80
+      protocol: TCP

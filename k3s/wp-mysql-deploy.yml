@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wp-mysql-deploy
+  namespace: k3s-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wp-mysql
+  template:
+    metadata:
+      labels:
+        app: wp-mysql
+    spec:
+      containers:
+        - name: wp-mysql-pod
+          image: mysql:26.10.0
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wp-mysql-secret
+                  key: password
+            - name: MYSQL_DATABASE
+              value: wp-db
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: wp-mysql-data
+      volumes:
+        - name: wp-mysql-data
+          persistentVolumeClaim:
+            claimName: wp-mysql-pvc
+            

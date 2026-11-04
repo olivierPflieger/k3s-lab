@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wp-wp-deploy
+  namespace: k3s-namespace
+spec:
+  replicas: 2
+  selector: 
+    matchLabels:
+      app: wp-wp
+  template:
+    metadata:
+      labels: 
+        app: wp-wp
+    spec:
+      containers:
+        - name: wp-wp-pod
+          image: wordpress:php8.5-apache
+          ports:
+            - containerPort: 80
+          env:
+            - name: WORDPRESS_DB_HOST
+              value: wp-mysql-svc:3306
+            - name: WORDPRESS_DB_NAME
+              value: wp-db
+            - name: WORDPRESS_DB_USER
+              value: root
+            - name: WORDPRESS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wp-mysql-secret
+                  key: password
+          volumeMounts:       
+            - mountPath: /var/www/html
+              name: wp-wp-data
+      volumes:
+        - name: wp-wp-data
+          persistentVolumeClaim:
+            claimName: wp-wp-pvc 
