@@ -81,6 +81,12 @@ def crash():
     global unhealthy
     unhealthy = True
     return jsonify(status='simulated failure enabled')
+    
+@app.post('/uncrash')
+def fixcrash():
+    global unhealthy
+    unhealthy = False
+    return jsonify(status='simulated failure resolved. System ok ')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
