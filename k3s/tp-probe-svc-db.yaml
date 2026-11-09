@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tp-probe-svc-db
+  namespace: k3s-namespace
+spec:
+  selector:
+    app: tp-probe-db
+  ports:
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+  type: ClusterIP
