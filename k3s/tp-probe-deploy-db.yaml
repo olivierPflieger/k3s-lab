@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tp-probe-deploy-db
+  namespace: k3s-namespace
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: tp-probe-db
+  template:
+    metadata:
+      labels:
+        app: tp-probe-db
+    spec:
+      containers:
+      - name: tp-probe-db-pod
+        image: postgres:latest
+        command: ["/bin/sh", "-c"]
+        args:
+          - "sleep 60 && exec docker-entrypoint.sh postgres"
+        env: 
+          - name: POSTGRES_USER
+            value: "admin"
+          - name: POSTGRES_PASSWORD
+            value: "admin"
+          - name: POSTGRES_DB
+            value: "testdb"
+        ports:
+          - containerPort: 5432

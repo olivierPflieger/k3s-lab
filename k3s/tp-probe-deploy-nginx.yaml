@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tp-probe-deploy-nginx
+  namespace: k3s-namespace
+spec:
+  replicas: 3
+  selector: 
+    matchLabels:
+      app: tp-probe-nginx
+  template:
+    metadata:
+      labels:
+        app: tp-probe-nginx
+    spec:
+      initContainers: 
+        - name: wait-for-progress
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z tp-probe-svc-db 5432; do
+                sleep 2
+              done
+      containers:
+      - name: tp-probe-nginx-pod
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
