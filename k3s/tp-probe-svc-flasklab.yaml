@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tp-probe-svc-flasklab
+  namespace: k3s-namespace
+spec:
+  selector:
+    app: tp-probe-flasklab
+  ports:
+    - port: 5000
+      targetPort: 5000
+  type: ClusterIP
