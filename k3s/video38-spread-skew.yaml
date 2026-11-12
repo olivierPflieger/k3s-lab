@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: video38-spread-skew
+  namespace: k3s-namespace
+spec:
+  replicas: 10
+  selector: 
+    matchLabels:
+      app: video38-spread-skew
+  template:
+    metadata:
+      labels:
+        app: video38-spread-skew
+    spec:
+      containers:
+      - name: video38-spread-skew-pod
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        imagePullPolicy: IfNotPresent
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: environment
+          whenUnsatisfiable: DoNotSchedule
+           

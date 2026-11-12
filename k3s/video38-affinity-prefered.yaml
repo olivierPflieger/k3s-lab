@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: video38-affinity-prefered
+  namespace: k3s-namespace
+spec:
+  replicas: 15
+  selector: 
+    matchLabels:
+      app: video38-affinity-prefered
+  template:
+    metadata:
+      labels:
+        app: video38-affinity-prefered
+    spec:
+      containers:
+      - name: video38-affinity-prefered-pod
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        imagePullPolicy: IfNotPresent
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 80 
+              preference:
+                  matchExpressions:
+                    - key: environment
+                      operator: In
+                      values: 
+                        - test 
