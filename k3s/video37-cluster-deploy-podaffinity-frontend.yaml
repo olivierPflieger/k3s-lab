@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: video37-cluster-deploy-podaffinity-frontend
+  namespace: k3s-namespace
+  labels:
+    app: frontend
+spec:
+  replicas: 5
+  selector: 
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        imagePullPolicy: IfNotPresent
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector: 
+                matchLabels:
+                  app: backend                      
+              topologyKey: environment

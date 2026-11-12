@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: video37-cluster-deploy
+  namespace: k3s-namespace
+spec:
+  replicas: 5
+  selector: 
+    matchLabels:
+      app: video37-cluster-deploy
+  template:
+    metadata:
+      labels:
+        app: video37-cluster-deploy
+    spec:
+      containers:
+      - name: video37-cluster-deploy-pod
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        imagePullPolicy: IfNotPresent
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms: 
+              - matchExpressions:
+                  - key: environment
+                    operator: In
+                    values: 
+                      - test
